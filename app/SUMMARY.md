@@ -8,7 +8,7 @@
 * [vim 编辑器](vim.md)
 * [git 版本控制](git.md)
 * [gitbook 书写工具](gitbook.md)
-   * [gitbook editor](gitbookeditor.md)
+  * [gitbook editor](gitbookeditor.md)
 * [wireshark 抓包分析](wireshark.md)
 * [Beyond Compare 文本比较](bcompare.md)
 
