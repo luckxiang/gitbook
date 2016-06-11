@@ -28,15 +28,32 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/mas
 cp ~/.zshrc ~/.zshrc.orig
 cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
 ```
+autojump插件必须添加，zsh和autojump组合才是最强王者。先下载   
 
-添加插件 ，打开配置文件.zshrc，参考如下修改  
+Linux
 ```
-plugins=(git osx)
+sudo apt-get install autojump
+```
+
+mac
+```
+brew install autojump
+```
+
+然后把以下代码添加到.zshrc   
+```
+[[ -s ~/.autojump/etc/profile.d/autojump.sh ]] && . ~/.autojump/etc/profile.d/autojump.sh
+```
+
+最后添加需要的插件 ，打开配置文件.zshrc，参考如下修改  
+```
+plugins=(git osx autojump)
 ```
 
 修改完毕执行  
 ```
 source ~/.zshrc
 ```
+
 
 详细配置信息见[oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh)
