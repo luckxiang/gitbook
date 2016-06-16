@@ -19,8 +19,8 @@ def replace_tags(path):
                 for tag in tags:
                     tag['class'] = 'homepage-back'
                     tag['target'] = '_self'
-                    tag['href'] = 'http://www.bigxiangbaobao.com'
-                    tag.string = '\n                        Back to Homepage'
+                    tag['href'] = 'http://www.bigxiangbaobao.com/book/'
+                    tag.string = '\n                        Back to Book'
                 fp = open(filename, 'w')
                 fp.write(str(soup))
                 fp.close()
@@ -39,10 +39,11 @@ else:
 
 for path in paths:
     path = path.strip('\n')
-    sys = 'cd %s;gitbook build;mv _book  %s;cp -rf %s /Users/xiang/Workspace/github/luckxiang.github.io/gbook/%s;rm -rf %s'%(path,path,path,path,path)
-    os.system(sys)
+    print(path)
+ #   sys = 'cd %s;gitbook build;mv _book  %s;cp -rf %s /Users/xiang/Workspace/github/luckxiang.github.io/gbook/%s;rm -rf %s'%(path,path,path,path,path)
+  #  os.system(sys)
 
-replace_tags(os.path.abspath(gbookpath))
+#replace_tags(os.path.abspath(gbookpath))
 
 
 
