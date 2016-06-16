@@ -38,10 +38,10 @@ else:
     paths.pop(0)
 
 for path in paths:
-    path = path.strip('\n')
+    path = path.strip('/\n')
     print(path)
- #   sys = 'cd %s;gitbook build;mv _book  %s;cp -rf %s /Users/xiang/Workspace/github/luckxiang.github.io/gbook/%s;rm -rf %s'%(path,path,path,path,path)
-  #  os.system(sys)
+    sys = 'cd %s;gitbook build;mv _book  %s;cp -rf %s /Users/xiang/Workspace/github/luckxiang.github.io/gbook/%s/;rm -rf %s'%(path,path,path,path,path)
+    #os.system(sys)
 
 #replace_tags(os.path.abspath(gbookpath))
 
