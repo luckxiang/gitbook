@@ -51,14 +51,48 @@ int fstatat(int fd, const char *restrict pathname, struct stat *restrict buf, in
 ```
 使用stat函数最多的应该是`ls －l`命令，用ls可以获取一个文件的所有信息。
 
+#### 用户ID和组ID
+和一个进程相关联的ID至少有6个
 
+| ID | 作用 |
+| ----- | ----- |
+| 实际用户ID和实际组ID | 我们是谁，取自口令文件登录项，只有超级进程可以改变 |
+| 有效用户ID和有效组ID | 用于文件访问权限检查 |
+| 保存的设置用户ID和组ID | 由exec函数保存 |
+当执行一个程序文件的时候，进程的有效ID通常就是实际ID，但是在st_mode中有两个位被称为设置用户ID和设置组ID，可以由S_ISUID和S_ISGID测试，他们在进程执行时，可以把进程的有效ID设置为文件所有者的ID。所以编写这样的函数需要特别小心，
 
+#### 文件访问权限
+一个文件有9个访问权限位，分为user,group,other。如｀drwxr-xr-x｀，第一位表示他是一个目录。
+`S_IEUSR|S_IWUSR|S_IXUSR,S_IEGRP|S_IWGRP|S_IXGRP,S_IEOTH|S_IWOTH|S_IXOTH`
 
+#### 访问权限测试
+```
+#include<unistd.h>
 
+int access(const char *pathname, int mode);//mode=R_OK | W_OK | X_OK
+int faccess(ingt fd, const char *pathname, int mode, int flag);
+//成功返回0 ，出错返回－1
+```
 
+#### 创建文件屏蔽字
+```
+#include<sys/stat.h>
 
+mode_t umask(mode_t cmask);／／cmask=S_IRUSR|S_IWUSR...等或成
+//返回之前的文件模式创建屏蔽字
+```
+进程创建新文件一定会使用umask，open和creat都有一个mode参数，
 
+#### 文件权限修改
+改变文件的权限，进程必须是超级用户权限或者有效用户ID等于文件的所有者ID
+```
+#include<sys/stat.h>
 
+int chmod(const char *pathname, mode_t mode);
+int fchmod(int fd, mode_t mode);
+int fchmodat(int fd , const char *pathname, mode_t mode,int flag);
+//成功返回0 ，出错返回－1
+```
 
 
 
