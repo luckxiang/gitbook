@@ -103,7 +103,8 @@ int fchown(int fd, uid_t owner, gid_t group);
 int fchownat(int fd, const char *pathname, uid_t owner, git_t group, int flag);
 int lchown(const char *pathname, uid_t owner, git_t group);
 //成功返回0 ，出错返回－1
-```这四个函数操作类似，在符号链接情况下，lchown，fchownat(flag=AT_SYMLINK_NOFOLLOW)更改符号链接本身的所有者，而不是指向该符号链接所指向的文件的所有者。
+```
+这四个函数操作类似，在符号链接情况下，lchown，fchownat(flag=AT_SYMLINK_NOFOLLOW)更改符号链接本身的所有者，而不是指向该符号链接所指向的文件的所有者。
 基于BSD的系统只允许超级用户更改文件的所有者，而System V允许任一用户更改他所拥有的文件的所有者，POSIX.1允许在这两种操作中选用一种，由宏`_POSIX_CHOWN_RESTRICTED`控制，它可以用pathconf和fpathconf函数查询，还可以在每个文件系统基础上，使该选项起作用或不起作用。
 
 #### 文件长度
