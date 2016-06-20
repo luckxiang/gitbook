@@ -123,4 +123,53 @@ int ftruncate(int fd, off_t length);
 //成功返回0，出错返回－1
 ```
 
+#### 文件系统
+我们可以把一个磁盘分成一个或者多个分区，每个分区可以包含一个文件系统，文件系统mount在根文件系统下，`i`节点是固定长度的记录项，它包含有关文件系统的大部分信息。每一个`i`节点都有一个链接计数，表示有多少个目录项指向该文件，只有计数为0时才能删除该文件。在stat结构中，链接计数包含在st_nlink中，这种链接类型称为硬链接。还有一种链接是符号链接（软链接），在软链接中包含了实际指向的文件的名字，stat中大多数信息都来自`i`节点。只有文件名和i节点编号存在目录项中，需要注意的是目录项中的`i`节点编号指向同一个文件系统中的相应`i`节点，这也是ln创建的硬链接不能跨越文件系统的原因。
+
+#### LINK操作
+任何一个文件可以有多个目录项指向其`i`节点，创建一个指向现有文件的链接方法是用link和linkat函数，相关操作具体如下
+```
+#include<unistd.h>
+
+int link(const char *existngpath, const char *newpath);
+int linkat(int efd, chonst char * existngpath, int nfd, const char *newpath, int flag);
+int ulink(const char *pathname);
+int ulinkat(int fd, const char *pathname, int flag);
+int remove(const char *pathname);
+//成功返回0，出错返回－1
+```
+对于文件remove等于ulink，对于目录，remove等雨rmdir
+
+
+#### 文件目录重命名
+```
+#include<stdio.h>
+
+int rename(const char *oldname, const char *newname);
+int renameat(int oldfd,const char *oldname, int newfd, const char *newname);
+//成功返回0，出错返回－1
+```
+
+#### 符号链接
+符号链接是对一个文件的间接指针，而硬链接直接指向文件得`i`节点，两者区别如下：
+- 硬链接通常要求文件和链接位于同一个文件系统中。
+- 只有超级用户才能创建指向目录的硬链接，需要底层文件系统支持，但是这样会带来循环的隐患。
+- 对符号链接以及它指向何种对象和文件系统并没有限制，一般用于将文件和目录移到系统的另一个位置。我开发的时候经常会用到这个操作。多种方案共用一个符号链接指向不同的目录。
+```
+#include<unistd.h>
+
+int symlink(const char *actualpath, const char *sympath);
+int symlinkat(const char *actualpath, int fd, const cahr *sympath);
+//成功返回0，出错返回－1
+```
+由于open跟随符号链接，打开链接会打开实际的目录或者文件所以需要一个方法打开链接本身并读取链接中的名字
+```
+#include<unistd.h>
+
+ssize_t readlink(const char *restrict pathname, char *restrict buf, size_t bufsize);
+ssize_t readlinkat(int fd, const char *restrict pathname, char *restrict buf, size_t bufsize);
+//成功返回读取的字节数，失败返回－1
+```
+
+
 
