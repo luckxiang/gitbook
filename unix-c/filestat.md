@@ -155,6 +155,7 @@ int renameat(int oldfd,const char *oldname, int newfd, const char *newname);
 - 硬链接通常要求文件和链接位于同一个文件系统中。
 - 只有超级用户才能创建指向目录的硬链接，需要底层文件系统支持，但是这样会带来循环的隐患。
 - 对符号链接以及它指向何种对象和文件系统并没有限制，一般用于将文件和目录移到系统的另一个位置。我开发的时候经常会用到这个操作。多种方案共用一个符号链接指向不同的目录。
+
 ```
 #include<unistd.h>
 
@@ -163,6 +164,7 @@ int symlinkat(const char *actualpath, int fd, const cahr *sympath);
 //成功返回0，出错返回－1
 ```
 由于open跟随符号链接，打开链接会打开实际的目录或者文件所以需要一个方法打开链接本身并读取链接中的名字
+
 ```
 #include<unistd.h>
 
@@ -170,6 +172,94 @@ ssize_t readlink(const char *restrict pathname, char *restrict buf, size_t bufsi
 ssize_t readlinkat(int fd, const char *restrict pathname, char *restrict buf, size_t bufsize);
 //成功返回读取的字节数，失败返回－1
 ```
+#### 文件时间
+对于每个文件维护三个时间段，如图所示：
+
+| 字段 | 说明 | 例子 | ls选项 |
+| ----- | ----- | ----- | ----- |
+| st_atim | 文件数据的最后访问时间 | read | -u |
+| st_mtim | 文件数据的最后修改时间 | write | 默认 |
+| st_ctim | i节点状态的最后修改时间 | chmod,chown | -c |
+
+相关操作函数如下：
+
+```
+#include<sys/stat.h>
+
+int futimens(int fd, const struct timespec times[2]);
+int utimensat(int fd, const char *path, const struct timespec times[2], int flags);
+//成功返回0，出错返回－1
+```
+
+```
+#include<sys/time.h>
+
+struct timeval{
+  time_t tv_sec;/* seconds */
+  long tv_usec;
+};
+
+int utime(const char *pathname, const struct timeval times[2]);
+//成功返回0，出错返回－1
+```
+
+#### 目录操作
+目录需要执行权限，以允许访问该目录中的文件名。`.`,`..`目录项自动创建。
+
+```
+＃include<sys/stat.h>
+int mkdir(const char *pathname, mode_t mode);
+int mkdirat(int fd, const char *pathname, mode_t mode);
+//成功返回0，出错返回－1
+
+#inlcude<unistd.h>
+int rmdir(const char *pathname);
+//成功返回0，出错返回－1
+
+#include<dirent.h>
+DIR opendir(const cahr *pathname);
+DIR fdopendir(int fd);
+//成功返回指针，出错返回NULL
+
+struct dirent *readdir(DIR *dp);
+//成功返回指针，若在目录尾或出错返回NULL
+
+void rewinddir(DIR *dp);
+
+int closedir(DIR *dp);
+//成功返回0，出错返回－1
+
+long telldir(DIR *dp);
+//返回与dp关联的目录中的当前位置
+
+void seekdir(DIR *dp, long loc);
+```
+
+每个进程都有一个当前工作目录，可以通过chdir和fchdir更改，注意当前工作目录是进程的一个属性，修改不会影响其他进程。这也是cd命令内建在shell中的原因。
+
+```
+#include<unistd.h>
+
+int chdir(const char *pathname);
+int fchdir(int fd);
+//成功返回0，出错返回－1
+```
+
+内核不保存完整的路径名，但是Linux可以确定完整的路径名，我们需要一个函数来获取获取绝对路径
+
+```
+＃include<unistd.h>
+
+char *getcwd(cahr *buf, size_t size);
+//成功返回buf，出错返回NULL，buf必须足够大，否则返回出错。
+```
+
+##### 设备特殊文件
+每个文件系统的存储设备都有主次设备号表示，可以用major和minor宏命令获取，st_dev和st_rdev经常容易混淆，前者表示的是文件系统的设备号，后者只有字符和块设备才有，包含了实际设备的设备号。对同一磁盘的不同文件系统，通常主设备号相同，次设备号不同。
+
+
+
+
 
 
 
