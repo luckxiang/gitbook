@@ -17,3 +17,93 @@ fwide并不改变已经定向的流，而且也无出错返回。
 
 #### 标准输入，标准输出，标准错误输出
 对于一个进程来说，打开的时候和三个流自动绑定，就是标准输入，标准输出，标准错误输出。可以通过`stdin`,`stdout`,`stderr`引用。他们和文件IO的，`STDIN_FILENO`,`STDOUT_FILENO`,`STDERR_FILENO`对应。
+
+#### 缓冲
+文件IO不带缓冲，标准IO带有缓冲，标准IO带缓冲的目的主要是为了减少read和write调用，自动管理IO流的缓冲，从而使应用程序不需要考虑这一点。但是由于某些地方定义不够清楚，常常令人疑惑。IO提供三种缓冲机制，全缓冲，行缓冲，不带缓冲。
+ISO C并没有详细的说明缓冲特征，很多系统入linux，mac OS X默认使用下列惯例：
+- 标准错误是不带缓冲的。
+- 若是指向终端设备的流，则是行缓冲，否则是全缓冲。
+更改缓冲类型的函数如下：
+
+```
+#include<stdio.h>
+
+void setbuf(FILE *restrict fp, char *restrict buf);
+void setvbuf(FILE *restrict fp, char *restrict buf, int mode, size_t size);
+//mode=_IOFBF | _IOLBF | _IONBF
+//成功返回0 ，出错返回－1
+```
+
+调用函数fflush函数可以冲洗一个流，使该流所有未写的数据都被传送至内核，若fp＝NULL，则所有输出流都会被冲洗。
+
+```
+#include<stdio.h>
+
+int fflush(FILE *fp);
+//成功返回0，出错返回－1
+```
+
+#### 读写流
+IO操作一定要注意安全，不安全的函数十分危险，非格式化的IO操作有三种不同类型的操作：
+- 每次一个字符的IO
+- 每次一行的IO
+- 直接IO
+
+```
+#include<stdio.h>
+
+int getc(FILE *fp);
+int fgetc(FILE *fp);
+int getchar(void);
+//成功返回下一个字符，出错或到达文件尾返回EOF
+
+int putc(int c, FILE *fp);
+int fputc(int c,FILE *fp);
+int putchar(int c);
+//成功返回次，出错返回EOF
+
+char *fgets(char *restrict buf, FILE *restrict buf);
+char *gets(char *buf);
+//成功返回buf，出错或者到达文件尾部返回NULL
+
+int fputs(const char *restrict str, FILE *restrict fp);
+int puts(const char *buf);
+//成功返回非负值，出错返回EOF
+```
+
+在FILE中维护了出错标志和文件结束标志，当返回EOF的时候并不能确定是出错还是到达文件尾部，可以用以下函数区分
+
+```
+#include<stdio.h>
+
+int ferror(FILE *fp);
+int feof(FILE *fp);
+//条件为真返回真，否则返回0
+void clearerr(FILE *fp);
+```
+
+还可以把读出来的字符又压回标准IO库的流缓冲区中，注意下次读出来的顺序和压回去相反。回送的字符，也不一定是上次读出来的字符，注意一次成功的ungetc会清除该流的文件结束标志
+
+```
+#include<stdio.h>
+
+int ungetc(int c, FILE *fp);
+//成功返回C，出错返回EOF
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
