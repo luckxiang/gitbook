@@ -1,7 +1,7 @@
 # 标准IO库
 
 ---
-标准IO库就是常说的C库，这个库由ISO C标准说明，标准IO库处理很多细节，如分配缓冲区，以优化的块长度执行IO等，标准IO库几十年没有大的改变了，实现很好。
+标准IO库就是常说的C库，这个库由ISO C标准说明，标准IO库处理很多细节，如分配缓冲区，以优化的块长度执行IO等，它最终也需要调用文件IO。
 
 #### 流和FILE对象
 文件IO的所有IO函数都是围绕着文件描述符来的，打开一个文件的时候获得一个文件描述符，该描述符标记了这个文件。而标准IO库，则是围绕着流进行，当用标准IO打开或者创建一个文件的时候，我们就把一个流和一个文件相关联。对于ASCII字符集，一个字符用一个字节表示，对于国际字符集，一个字符可以用多个字节表示，即宽字符集。流的定向决定了读写的字符是字节流还是多字节流，创建一个流的时候并没有定向。若在未定向的流上使用单字节函数，则是字节定向，使用多字节函数，则是宽字节定向。只有两个函数可以改变流的定向，freopen和fwide
@@ -43,7 +43,7 @@ int fflush(FILE *fp);
 //成功返回0，出错返回－1
 ```
 
-#### 读写流
+#### 非格式化IO
 IO操作一定要注意安全，不安全的函数十分危险，非格式化的IO操作有三种不同类型的操作：
 - 每次一个字符的IO
 - 每次一行的IO
@@ -90,20 +90,69 @@ void clearerr(FILE *fp);
 int ungetc(int c, FILE *fp);
 //成功返回C，出错返回EOF
 ```
+前边的都是字符操作，有时候我们想一次读写一个完整的结构或者二进制数组，标准IO库提供了读写二进制文件的操作函数。
 
+```
+#include<stdio.h>
 
+size_t fread(void *restrist ptr, size_t size, size_t nobj, FILE *fp);
+size_t fwrite(const void *restrist ptr, size_t size, size_t nobj, FILE *fp);
+//返回读或者写的对象数
+```
 
+#### 格式化IO
+```
+#include<stdio.h>
+int printf(const char *restrict format, ...);
+int fprintf(FILE *restrict fp, const char *restrict format, ...);
+int dprintf(int fd, const char *restrict format, ...);
+//成功返回字符数，出错返回负值
+int sprintf(char *restrict buf, const char *restrict format, ...);
+成功返回存入数组的字符数，出错返回负值
+int snprintf(char *restrict buf,size_t n, const cahr *restrict format, ...);
+//若缓冲区足够大，返回存入数组的字符数，出错返回负值
+```
 
+```
+#include<stdio.h>
+int scanf(const cahr *restrict format);
+int fscanf(FILE *restrict fp, const char *restrict format, ...);
+int sscanf(const char *restrict buf, const char *restrict format, ...);
+//返回负值的输入项数，出错或者到达文件尾返回EOF
+```
 
+#### 定位流
 
+有三种方法定位标准IO流
+- ftell和fseek函数
+- ftello和fseeko函数
+- fgetops和fsetops函数 ISOC标准，非unix需要用这两个函数
 
+```
+#inlcude<stdio.h>
 
+int ftell(FILE *fp);
+//成功返回当前文件指示，出错返回－1L
+int fseek(FILE *fp, long offest, int whence);
+//成功返回0，出错返回－1
+void rewind(FILE *fp);
+```
 
+```
+#include<stdio.h>
+off_t ftello(FILE *fp);
+//成功返回当前文件位置，出错返回(off_t)-1
+int fseeko(FILE *fp, off_t offset, int whence);
+//成功返回0，出错返回－1
+```
 
+```
+#include<stdio.h>
 
-
-
-
+int fgetpos(FILE *restrict fp, fpos_t *restrict pos);
+int fsetops(FILE *fp, const fpos_t *pos);
+//成功返回0，出错返回非0
+```
 
 
 
