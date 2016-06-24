@@ -12,4 +12,6 @@
 * [wireshark 抓包分析](wireshark.md)
 * [Beyond Compare 文本比较](bcompare.md)
 * [Zsh 终端shell](zsh.md)
+* [iTerm Mac终端](iterm.md)
+* [Understand 程序静态分析](understand.md)
 

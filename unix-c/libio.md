@@ -154,5 +154,43 @@ int fsetops(FILE *fp, const fpos_t *pos);
 //成功返回0，出错返回非0
 ```
 
+#### 临时文件
+有时候我们需要创建一些临时文件，ISO C 标准提供了下面一些函数：
+
+```
+#include<stdio.h>
+
+char *tempnam(char *ptr);
+//返回指向唯一路径名的指针
+
+FILE *tmpfile(void);
+
+//成功返回文件指针，出错返回NULL
+
+char *mkdtemp(cahr *template);
+//成功指向目录名的指针，出错返回NULL
+
+char mkstemp(char *template);
+//成功返回文件描述符，出错返回－1
+```
+
+#### 内存流
+标准IO把数据缓存在内存中，因此每次一字符和每次一行更有效，我们也可以通过stebuf或setvbuf函数让IO库使用我们自己的缓冲区，
+
+```
+#include<stdio.h>
+
+FILE *fmemopen(void *resirict buf, size_t size, const char *restrict type);
+FILE *open_memstream(char **bufp, size_t *sizep);
+//成功返回流指针，出错返回NULL
+
+FILE* open_wmemstream(wchar_t **bufp, size_t *sizep);
+```
+
+
+
+
+
+
 
 
