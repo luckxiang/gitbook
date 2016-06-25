@@ -6,4 +6,5 @@
 * [文件IO](fileio.md)
 * [文件属性](filestat.md)
 * [标准IO库](libio.md)
+* [系统文件和信息](sysinfo.md)
 

@@ -121,6 +121,11 @@ int sscanf(const char *restrict buf, const char *restrict format, ...);
 //返回负值的输入项数，出错或者到达文件尾返回EOF
 ```
 
+```
+#include<stdio.h>
+int fileno(FILE *fp);
+//返回与该流关联的文件描述符
+```
 #### 定位流
 
 有三种方法定位标准IO流
