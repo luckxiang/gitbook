@@ -1,7 +1,7 @@
-#!/usr/bin/env python3.5
+#!/usr/bin/env python3
 # coding=utf-8
 
-import os 
+import os
 import sys
 from bs4 import BeautifulSoup
 
@@ -28,7 +28,7 @@ def replace_tags(path):
 os.system('cp -rf /Users/xiang/GitBook/Library/Import/ ./')
 os.system('find . -name  ".git"  -mindepth 2|xargs rm -rf')
 os.system('git add .')
-os.system('git commit -m "add"')
+os.system('git commit -m "gbook"')
 os.system('git push origin master')
 
 if len(sys.argv) < 2:
