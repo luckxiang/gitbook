@@ -27,6 +27,7 @@ def replace_tags(path):
                 fp.close()
 
 os.system('cp -rf /Users/xiang/GitBook/Library/Import/ ./')
+os.system('mv -rf myapp app')
 os.system('find . -name  ".git"  -mindepth 2|xargs rm -rf')
 os.system('git add .')
 os.system('git commit -m "gbook"')
