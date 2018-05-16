@@ -4,6 +4,7 @@
 import os
 import sys
 from bs4 import BeautifulSoup
+import readline  #允许输入的时候使用删除键和方向键
 
 gbookpath = '/Users/xiang/Workspace/github/luckxiang.github.io/gbook'
 
